@@ -270,8 +270,8 @@ export default function CourseCalendarView() {
                                   disabled={!slot.status}
                                   size="sm"
                                   className={`w-100 ${is_selected(slot.student_picks)
-                                      ? "btn-success"
-                                      : "btn-primary"
+                                      ? "btn-primary"
+                                      : "btn-secondary"
                                     }`}
                                   style={{ maxWidth: "100px" }}
                                   onClick={() =>
@@ -282,7 +282,19 @@ export default function CourseCalendarView() {
                                     )
                                   }
                                 >
-                                  {slot.status ? slot.count : "..."}
+
+                                    {is_selected(slot.student_picks) &&
+                                        <div className={'d-flex flex-row justify-content-between align-items-center'}>
+                                            <span className={'ms-1'}>Ok</span>
+                                            <i className="bi bi-check-circle"></i>
+                                        </div>
+                                    }
+                                    {!is_selected(slot.student_picks) &&
+                                        <div className={'d-flex flex-row justify-content-between align-items-center'}>
+                                            <span className={'ms-1'}>Bussy</span>
+                                            <i className="bi bi-x-circle"></i>
+                                        </div>
+                                    }
                                 </Button>
                               ) : (
                                 <Button
