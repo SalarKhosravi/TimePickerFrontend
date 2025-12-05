@@ -1,0 +1,18 @@
+/* Global scale-down (works everywhere, does not trigger zoom by itself) */
+html {
+    font-size: 90%; /* ~14px */
+}
+
+/* iOS does NOT zoom unless inputs are <16px */
+input, textarea, select {
+    font-size: 16px !important;
+}
+
+/* Prevent viewport jumping on iOS */
+html, body {
+    height: -webkit-fill-available;
+}
+
+th, td {
+    width: 100px !important;
+}
