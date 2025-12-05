@@ -187,7 +187,7 @@ export default defineConfig({
           }
       })
   ],
-  base: '/',
+  base: '/frontend/dist/',
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
