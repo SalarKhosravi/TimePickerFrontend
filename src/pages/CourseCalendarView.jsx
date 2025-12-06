@@ -96,7 +96,7 @@ export default function CourseCalendarView() {
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error loading data {error.message}</div>;
 
-  const days = [...new Set(courseCalendar.calendar_slots.map((s) => s.day))];
+  const days = ['saturday', 'sunday', 'monday', 'tuesday', 'wednesday', 'thursday'];
   const times = [...new Set(courseCalendar.calendar_slots.map((s) => s.time))];
 
   const calendarMap = {};

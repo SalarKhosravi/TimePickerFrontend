@@ -187,7 +187,7 @@ export default defineConfig({
           }
       })
   ],
-  base: '/frontend/dist/',
+  base: process.env.VITE_APP_BASE,
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),

@@ -1,4 +1,7 @@
 import axios from "axios";
+import {handleAdminLogout, handleStudentLogout} from "@/services/AuthService.js";
+import {toaste} from "@/components/partitions/ToastNotifications.jsx";
+import Sleep from "@/components/partitions/Sleep.js";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -48,6 +51,16 @@ const apiService = async (method, path, data = null) => {
     } catch (error) {
         // Comprehensive error handling
         let message = "An unknown error occurred";
+
+        if(error?.response?.status === 404){
+            handleStudentLogout()
+            handleAdminLogout()
+
+            toaste.show("Failed!", 'You must log in', 2500, "danger");
+            await Sleep(1000);
+
+            window.location.reload()
+        }
 
         // 1. Network errors (no response from server)
         if (!error.response) {
