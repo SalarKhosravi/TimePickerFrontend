@@ -14,6 +14,12 @@ export default defineConfig({
       react(),
       VitePWA({
           registerType: 'autoUpdate',
+          devOptions: {
+              enabled: true
+          },
+          workbox: {
+              cleanupOutdatedCaches: true
+          },
           manifest: {
               id: "/",
               name: "Time Picker",

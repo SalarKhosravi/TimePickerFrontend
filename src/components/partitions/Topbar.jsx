@@ -5,6 +5,10 @@ import {isStudentLoggedIn, handleStudentLogout, isAdminLoggedIn, handleAdminLogo
 import {Button} from "react-bootstrap";
 import AlertModal from '@/components/partitions/AlertModal.jsx'
 
+function  reloadPage(){
+    window.location.reload()
+}
+
 async function handleLogoutStudent(){
     const result = await handleStudentLogout();
 
@@ -41,36 +45,41 @@ export default function Topbar() {
                             <Nav.Link as={Link} to="/courses">Courses</Nav.Link>
                         </Nav>
                     </div>
-                    {isLoggedIn && (
-                        <AlertModal
-                            message="Are you sure you want to logout?"
-                            onConfirm={() => {
-                                handleLogoutStudent();
-                            }}
-                            confirmText="Logout"
-                            cancelText="Cancel"
-                        >
-                            <Button className={'btn btn-warning btn-sm me-2'}>
-                                <i className="bi bi-person-slash"></i>
-                                <span className="ps-2">logout</span>
-                            </Button>
-                        </AlertModal>
-                    )}
-                    {adminIsLogged && (
-                        <AlertModal
-                            message="Are you sure you want to logout admin?"
-                            onConfirm={() => {
-                                handleLogoutAdmin();
-                            }}
-                            confirmText="Logout"
-                            cancelText="Cancel"
-                        >
-                            <Button className={'btn btn-warning me-1 btn-sm'}>
-                                <i className="bi bi-person-slash"></i>
-                                <span className="ps-2">logout</span>
-                            </Button>
-                        </AlertModal>
-                    )}
+                    <div className={'d-flex flex-row justify-content-end align-items-center'}>
+                        <Button onClick={()=>{reloadPage()}} className={'btn btn-primary me-1 btn-sm'}>
+                            <i className="bi bi-arrow-clockwise"></i>
+                        </Button>
+                        {isLoggedIn && (
+                            <AlertModal
+                                message="Are you sure you want to logout?"
+                                onConfirm={() => {
+                                    handleLogoutStudent();
+                                }}
+                                confirmText="Logout"
+                                cancelText="Cancel"
+                            >
+                                <Button className={'btn btn-warning btn-sm me-2'}>
+                                    <i className="bi bi-person-slash"></i>
+                                    <span className="ps-2">logout</span>
+                                </Button>
+                            </AlertModal>
+                        )}
+                        {adminIsLogged && (
+                            <AlertModal
+                                message="Are you sure you want to logout admin?"
+                                onConfirm={() => {
+                                    handleLogoutAdmin();
+                                }}
+                                confirmText="Logout"
+                                cancelText="Cancel"
+                            >
+                                <Button className={'btn btn-warning me-1 btn-sm'}>
+                                    <i className="bi bi-person-slash"></i>
+                                    <span className="ps-2">logout</span>
+                                </Button>
+                            </AlertModal>
+                        )}
+                    </div>
                 </div>
             </Navbar>
         </div>
