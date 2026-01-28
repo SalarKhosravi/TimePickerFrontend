@@ -38,10 +38,10 @@ export default function CourseCalendarView() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  function is_selected(student_picks) {
+  function is_selected(user_picks) {
     const user_info = getUserInfo();
     const user_id = user_info.id;
-    const result = student_picks.some(
+    const result = user_picks.some(
       (item) => parseInt(item.student.id) === parseInt(user_id)
     );
 
@@ -52,7 +52,7 @@ export default function CourseCalendarView() {
     }
   }
 
-  
+
   async function handleActivateSlot(slot_id, slot_status) {
     let result = null;
     if (slot_status) {
@@ -73,7 +73,7 @@ export default function CourseCalendarView() {
     }
 
     setCourseCalendar(result.data.course)
-    
+
   }
 
   const fetchCalendar = useCallback(async () => {
@@ -199,7 +199,7 @@ export default function CourseCalendarView() {
             {days.map((day) => {
               return (
                 <tr key={day}>
-                    <td style={{ textTransform: "capitalize" }}>{day}</td> 
+                    <td style={{ textTransform: "capitalize" }}>{day}</td>
                     {times.map((time) => {
                       const slot = calendarMap[day]?.[time];
                       return (
@@ -219,10 +219,10 @@ export default function CourseCalendarView() {
                                 <TooltipInformation
                                   tooltipContent={
                                     <div>
-                                      {slot?.student_picks.length > 0 ? (
-                                        slot?.student_picks.map((item) => (
-                                          <div key={item.student.id}>
-                                            {item.student.name}
+                                      {slot?.user_picks.length > 0 ? (
+                                        slot?.user_picks.map((item) => (
+                                          <div key={item.student?.id}>
+                                            {item.student?.name}
                                           </div>
                                         ))
                                       ) : (
@@ -269,7 +269,7 @@ export default function CourseCalendarView() {
                                   variant={slot.status ? "" : "secondary"}
                                   disabled={!slot.status}
                                   size="sm"
-                                  className={`w-100 ${is_selected(slot.student_picks)
+                                  className={`w-100 ${is_selected(slot.user_picks)
                                       ? "btn-primary"
                                       : "btn-secondary"
                                     }`}
@@ -277,19 +277,19 @@ export default function CourseCalendarView() {
                                   onClick={() =>
                                     handleRegisterStudentSlot(
                                       slot.id,
-                                      is_selected(slot.student_picks),
+                                      is_selected(slot.user_picks),
                                       fetchCalendar
                                     )
                                   }
                                 >
 
-                                    {is_selected(slot.student_picks) &&
+                                    {is_selected(slot.user_picks) &&
                                         <div className={'d-flex flex-row justify-content-between align-items-center'}>
                                             <span className={'ms-1'}>Ok</span>
                                             <i className="bi bi-check-circle"></i>
                                         </div>
                                     }
-                                    {!is_selected(slot.student_picks) &&
+                                    {!is_selected(slot.user_picks) &&
                                         <div className={'d-flex flex-row justify-content-between align-items-center'}>
                                             <span className={'ms-1'}>Bussy</span>
                                             <i className="bi bi-x-circle"></i>

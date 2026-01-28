@@ -2,6 +2,8 @@ import { useState } from "react";
 import apiService from "@/services/apiService";
 import Button from "react-bootstrap/Button";
 import { useNavigate, Link } from "react-router-dom";
+import {handleAdminLogin} from "@/services/AuthService.js";
+
 
 export default function AdminLogin() {
   const [username, setUsername] = useState("");
@@ -11,7 +13,7 @@ export default function AdminLogin() {
 
   const navigate = useNavigate();
 
-  const handleAdminLogin = async (e) => {
+  const handleAdminLoginRequest = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
@@ -22,12 +24,11 @@ export default function AdminLogin() {
     });
 
     if (res.data?.token) {
-      localStorage.setItem("user_token", res.data.token);
-      navigate(`/courses`, { replace: true });
+        handleAdminLogin(res.data?.token)
+        navigate(`/courses`, { replace: true });
     } else {
-      setError(res.message || "Login failed");
+        setError(res.message || "Login failed");
     }
-
     setLoading(false);
   };
 
@@ -38,7 +39,7 @@ export default function AdminLogin() {
         style={{ height: "80vh" }}
       >
         <div className="col-12 col-md-6 col-xl-5 col-xxl-4 mt-5">
-          <form onSubmit={handleAdminLogin}>
+          <form onSubmit={handleAdminLoginRequest}>
             <div className="mb-3">
               <label className="form-label">Username</label>
               <input

@@ -1,4 +1,5 @@
 import { registerStudent } from "./studentService";
+import apiService from "@/services/apiService.js";
 
 export function getUserInfo() {
     const storedName = localStorage.getItem('student_name');
@@ -36,6 +37,11 @@ export function handleStudentLogout() {
 
 export function handleAdminLogout() {
     localStorage.removeItem("user_token");
+    return true;
+}
+
+export function handleAdminLogin(token) {
+    localStorage.setItem("user_token", token);
     return true;
 }
 

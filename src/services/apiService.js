@@ -53,8 +53,8 @@ const apiService = async (method, path, data = null) => {
         let message = "An unknown error occurred";
 
         if(error?.response?.status === 404){
-            handleStudentLogout()
-            handleAdminLogout()
+            // handleStudentLogout()
+            // handleAdminLogout()
 
             toaste.show("Failed!", 'You must log in', 2500, "danger");
             await Sleep(1000);

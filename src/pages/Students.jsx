@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import Table from 'react-bootstrap/Table';
 import { Button } from "react-bootstrap";
 import AlertModal from "@/components/partitions/AlertModal.jsx";
 import { toaste } from "@/components/partitions/ToastNotifications.jsx";
@@ -31,28 +31,55 @@ export default function Students() {
                 <p className="p-0 m-0 h4">Students List</p>
             </div>
             <div className="row mx-auto">
-                {students && students.map((student) => (
-                    <div className="col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2 xol-xxl-1 p-1" key={student.id}>
-                        <AlertModal
-                            message={`${student.name} will be deleted, fine ?`}
-                            onConfirm={() => {
-                                handleDeleteStudent(student.id, refetch)
-                            }}
-                            buttonColor="danger"
-                            confirmText="Delete"
-                            cancelText="Cancel"
-                        >
-                            <Button
-                                key={student.id}
-                                variant="secondary"
-                                size="sm"
-                                className="overflow-hidden text-nowrap w-100">
-                                {student.name}
-                            </Button>
-                        </AlertModal>
+                    <div className="col-12 px-4" >
+                        <Table responsive hover borderless variant="dark">
+                            <thead>
+                            <tr className={'border-bottom'}>
+                                <th>id</th>
+                                <th>Full Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            {students && students.map((student) => (
+
+                                    <tr key={student?.id}>
+                                        <td>{student?.id}</td>
+                                        <td>{student?.full_name}</td>
+                                        <td>{student?.email}</td>
+                                        <td>{student?.phone_number}</td>
+                                        <td>
+                                            <AlertModal
+                                                message={`${student?.name} will be deleted, fine ?`}
+                                                onConfirm={() => {
+                                                    handleDeleteStudent(student?.id, refetch)
+                                                }}
+                                                buttonColor="danger"
+                                                confirmText="Delete"
+                                                cancelText="Cancel"
+                                            >
+                                            <Button
+                                                key={student?.id}
+                                                variant="danger"
+                                                size="sm"
+                                                className=""
+                                            >
+                                                <i className={'bi bi-trash'}></i>
+                                            </Button>
+                                            </AlertModal>
+                                        </td>
+                                    </tr>
+
+
+                            ))}
+                            </tbody>
+                        </Table>
                     </div>
-                ))}
             </div>
         </div>
     )
 }
+
