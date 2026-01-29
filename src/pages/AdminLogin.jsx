@@ -18,7 +18,7 @@ export default function AdminLogin() {
     setLoading(true);
     setError(null);
 
-    const res = await apiService("post", "/login/", {
+    const res = await apiService("post", "/admin/login/", {
       username,
       password,
     });
@@ -67,12 +67,12 @@ export default function AdminLogin() {
             <div className="d-flex gap-2">
               <Button
                 type={"submit"}
-                className="btn btn-primary w-100 mt-4"
+                className="btn btn-primary w-75 mt-4"
                 disabled={loading}
               >
                 {loading ? "Logging in…" : "Login"}
               </Button>
-              <Link className="btn btn-secondary w-100 mt-4" to="/">
+              <Link className="btn btn-secondary w-25 mt-4" to="/">
                 Student
               </Link>
             </div>

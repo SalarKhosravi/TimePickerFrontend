@@ -1,62 +1,82 @@
+import apiService from "@/services/apiService.js";
 import {useState} from "react";
 import Button from "react-bootstrap/Button";
-import {handleRegisterStudent} from "@/services/AuthService.js";
+import {handleUserLogin, handleRegisterStudent} from "@/services/AuthService.js";
 import {Link, useNavigate} from "react-router-dom";
-import Nav from "react-bootstrap/Nav";
 
 
 export default function StudentLogin() {
-    const [name, setName] = useState("");
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
+
     const navigate = useNavigate();
 
-    const handleLogin = async (e) => {
+    const handleUserLoginRequest = async (e) => {
         e.preventDefault();
+        setLoading(true);
+        setError(null);
 
-        if (!name) {
-            alert("Please enter both name.");
-            return;
+        const res = await apiService("post", "/auth/login/", {
+            username,
+            password,
+        });
+
+        if (res.data?.token) {
+            handleUserLogin(res.data)
+            navigate(`/courses`, { replace: true });
+        } else {
+            setError(res.message || "Login failed");
         }
-
-        const result = await handleRegisterStudent(name);
-
-        if (!result) {
-            return;
-        }
-
-        navigate("/");
-        window.location.reload()
+        setLoading(false);
     };
-
 
     return (
         <div className="container-fluid">
-            <div className="row mx-auto justify-content-center align-items-center" style={{height: "80vh"}}>
+            <div
+                className="row mx-auto justify-content-center align-items-center"
+                style={{ height: "80vh" }}
+            >
                 <div className="col-12 col-md-6 col-xl-5 col-xxl-4 mt-5">
-                    <div className="bg-body-secondary shadow rounded-5 p-5">
-                        <form onSubmit={handleLogin}>
-                            <div className="form-group">
-                                <label htmlFor="name" className="form-label mb-2">Name</label>
-                                <input
-                                    className="form-control"
-                                    type="text"
-                                    id="name"
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
-                                    placeholder="John Doe"
-                                />
-                            </div>
-                            <Button type="submit" className="btn btn-primary mt-5 w-100">
-                                Login
+                    <form onSubmit={handleUserLoginRequest}>
+                        <div className="mb-3">
+                            <label className="form-label">Username</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                required
+                            />
+                        </div>
+
+                        <div className="mb-3">
+                            <label className="form-label">Password</label>
+                            <input
+                                type="password"
+                                className="form-control"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                        </div>
+
+                        {error && <div className="alert alert-danger py-2">{error}</div>}
+
+                        <div className="d-flex gap-2">
+                            <Button
+                                type={"submit"}
+                                className="btn btn-primary w-100 mt-4"
+                                disabled={loading}
+                            >
+                                {loading ? "Logging in…" : "Login"}
                             </Button>
-                        </form>
-                    </div>
+                        </div>
+                    </form>
                 </div>
-            </div>
-            <div className="position-fixed top-0 end-0 m-3">
-                <Nav.Link as={Link} to="/admin">
-                    <Button className="btn btn-secondary btn-sm">Admin</Button>
-                </Nav.Link>
             </div>
         </div>
     );
 }
+

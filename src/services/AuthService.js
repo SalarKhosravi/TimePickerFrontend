@@ -1,14 +1,13 @@
 import { registerStudent } from "./studentService";
-import apiService from "@/services/apiService.js";
 
 export function getUserInfo() {
-    const storedName = localStorage.getItem('student_name');
-    const storedId = localStorage.getItem('student_id');
+    const storedFullName = localStorage.getItem('full_name');
+    const storedId = localStorage.getItem('user_id');
 
-    if (storedName && storedId) {
+    if (storedFullName && storedId) {
         return {
             id: storedId,
-            name: storedName,
+            name: storedFullName,
         }
     }
     console.error('cant found user info')
@@ -16,22 +15,30 @@ export function getUserInfo() {
 }
 
 export function isStudentLoggedIn() {
-    const storedName = localStorage.getItem('student_name');
-    const storedId = localStorage.getItem('student_id');
+    const user_token = localStorage.getItem('user_token');
+    const full_name = localStorage.getItem('full_name');
+    const phone_number = localStorage.getItem('phone_number');
 
-    return !!(storedName && storedId);
+    return !!(user_token && full_name && phone_number);
 }
 
 
 export function isAdminLoggedIn() {
     const user_token = localStorage.getItem('user_token');
-    return !!user_token;
+    const phone_number = localStorage.getItem('phone_number');
+    if (user_token){
+        if (!phone_number) {
+            return true
+        }
+    }
+    return false;
 }
 
 
 export function handleStudentLogout() {
-    localStorage.removeItem("student_name");
-    localStorage.removeItem("student_id");
+    localStorage.removeItem("user_token");
+    localStorage.removeItem("full_name");
+    localStorage.removeItem("phone_number");
     return true;
 }
 
@@ -42,6 +49,15 @@ export function handleAdminLogout() {
 
 export function handleAdminLogin(token) {
     localStorage.setItem("user_token", token);
+    return true;
+}
+
+export function handleUserLogin(data) {
+    localStorage.setItem("user_id", data.id);
+    localStorage.setItem("user_token", data.token);
+    localStorage.setItem("full_name", data.full_name);
+    localStorage.setItem("phone_number", data.phone_number);
+
     return true;
 }
 

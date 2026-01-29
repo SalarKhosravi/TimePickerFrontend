@@ -42,7 +42,7 @@ export default function CourseCalendarView() {
     const user_info = getUserInfo();
     const user_id = user_info.id;
     const result = user_picks.some(
-      (item) => parseInt(item.student.id) === parseInt(user_id)
+      (item) => parseInt(item.user.id) === parseInt(user_id)
     );
 
     if (result) {
@@ -125,18 +125,18 @@ export default function CourseCalendarView() {
   }
 
   async function handleRegisterStudentSlot(slotId, is_selected) {
-  const student_id = localStorage.getItem("student_id");
+  const user_id = localStorage.getItem("user_id");
 
   let result = null;
   if (!is_selected) {
     result = await apiService("post", `/register-slot/select/`, {
       calendar_slot: slotId,
-      student: student_id,
+      user: user_id,
     });
   } else {
     result = await apiService("post", `/register-slot/deselect/`, {
       calendar_slot: slotId,
-      student: student_id,
+      user: user_id,
     });
   }
 
@@ -221,12 +221,12 @@ export default function CourseCalendarView() {
                                     <div>
                                       {slot?.user_picks.length > 0 ? (
                                         slot?.user_picks.map((item) => (
-                                          <div key={item.student?.id}>
-                                            {item.student?.name}
+                                          <div key={item.user?.id}>
+                                            {item.user?.full_name}
                                           </div>
                                         ))
                                       ) : (
-                                        <div>No students</div>
+                                        <div>No Users</div>
                                       )}
                                     </div>
                                   }
@@ -286,12 +286,16 @@ export default function CourseCalendarView() {
                                     {is_selected(slot.user_picks) &&
                                         <div className={'d-flex flex-row justify-content-between align-items-center'}>
                                             <span className={'ms-1'}>Ok</span>
+                                            <span className={'ms-1'}>
+                                                {slot.count}
+                                            </span>
                                             <i className="bi bi-check-circle"></i>
                                         </div>
                                     }
                                     {!is_selected(slot.user_picks) &&
                                         <div className={'d-flex flex-row justify-content-between align-items-center'}>
                                             <span className={'ms-1'}>Bussy</span>
+                                            <span className={'ms-1'}>{slot.count}</span>
                                             <i className="bi bi-x-circle"></i>
                                         </div>
                                     }

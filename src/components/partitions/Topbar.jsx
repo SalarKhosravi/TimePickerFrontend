@@ -59,8 +59,7 @@ export default function Topbar() {
                                 cancelText="Cancel"
                             >
                                 <Button className={'btn btn-warning btn-sm me-2'}>
-                                    <i className="bi bi-person-slash"></i>
-                                    <span className="ps-2">logout</span>
+                                    <span className="px-3">Exit</span>
                                 </Button>
                             </AlertModal>
                         )}
@@ -75,7 +74,7 @@ export default function Topbar() {
                             >
                                 <Button className={'btn btn-warning me-1 btn-sm'}>
                                     <i className="bi bi-person-slash"></i>
-                                    <span className="ps-2">logout</span>
+                                    <span className="px-3">Exit</span>
                                 </Button>
                             </AlertModal>
                         )}

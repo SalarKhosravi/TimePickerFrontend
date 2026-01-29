@@ -20,7 +20,7 @@ function ProtectedUserRoute({ children }) {
     const adminIsLogged = isAdminLoggedIn();
 
     if (!isLoggedIn && !adminIsLogged) {
-        return <Navigate to="/students-login" replace state={{ from: location }} />;
+        return <Navigate to="/login" replace state={{ from: location }} />;
     }
 
     return children;
@@ -52,7 +52,7 @@ function App() {
                 </Route>
 
                 {/*user path*/}
-                <Route path="/students-login" element={isLoggedIn ? <Navigate to="/" replace /> : <StudentLogin />} />
+                <Route path="/login" element={isLoggedIn ? <Navigate to="/" replace /> : <StudentLogin />} />
                 <Route element={<ProtectedUserRoute><Layout /></ProtectedUserRoute>}>
                     <Route index element={<ShowCourseList />} />
                     <Route path="/courses" element={<ShowCourseList />} />
