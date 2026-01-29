@@ -1,7 +1,7 @@
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { Link } from 'react-router-dom';
-import {isStudentLoggedIn, handleStudentLogout, isAdminLoggedIn, handleAdminLogout} from "@/services/AuthService.js";
+import {isUserLoggedIn, handleUserLogout, isAdminLoggedIn, handleAdminLogout} from "@/services/AuthService.js";
 import {Button} from "react-bootstrap";
 import AlertModal from '@/components/partitions/AlertModal.jsx'
 
@@ -9,8 +9,8 @@ function  reloadPage(){
     window.location.reload()
 }
 
-async function handleLogoutStudent(){
-    const result = await handleStudentLogout();
+async function handleLogoutUser(){
+    const result = await handleUserLogout();
 
     if (!result) {
         return;
@@ -30,7 +30,7 @@ async function handleLogoutAdmin(){
 }
 
 export default function Topbar() {
-    const isLoggedIn = isStudentLoggedIn();
+    const isLoggedIn = isUserLoggedIn();
     const adminIsLogged = isAdminLoggedIn();
 
     return (
@@ -40,7 +40,7 @@ export default function Topbar() {
                     <div className="">
                         <Nav className="me-auto">
                             {adminIsLogged && (
-                                <Nav.Link as={Link} to="/admin/students">Students</Nav.Link>
+                                <Nav.Link as={Link} to="/admin/users">Students</Nav.Link>
                             )}
                             <Nav.Link as={Link} to="/courses">Courses</Nav.Link>
                         </Nav>
@@ -53,7 +53,7 @@ export default function Topbar() {
                             <AlertModal
                                 message="Are you sure you want to logout?"
                                 onConfirm={() => {
-                                    handleLogoutStudent();
+                                    handleLogoutUser();
                                 }}
                                 confirmText="Logout"
                                 cancelText="Cancel"

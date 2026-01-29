@@ -1,11 +1,11 @@
 import apiService from "@/services/apiService.js";
 import {useState} from "react";
 import Button from "react-bootstrap/Button";
-import {handleUserLogin, handleRegisterStudent} from "@/services/AuthService.js";
+import {handleUserLogin} from "@/services/AuthService.js";
 import {Link, useNavigate} from "react-router-dom";
 
 
-export default function StudentLogin() {
+export default function UserLogin() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState(null);
@@ -34,11 +34,23 @@ export default function StudentLogin() {
 
     return (
         <div className="container-fluid">
+            <div className={'row mx-auto position-fixed top-0 end-0 px-4'}>
+                <Button variant="secondary" className="mt-4 w-auto btn-sm px-4" disabled={loading} >
+                    <Link className={'text-decoration-none text-light'} to={'/admin/'}>Admin</Link>
+                </Button>
+            </div>
+
             <div
                 className="row mx-auto justify-content-center align-items-center"
-                style={{ height: "80vh" }}
+                style={{ height: "70vh" }}
             >
+
                 <div className="col-12 col-md-6 col-xl-5 col-xxl-4 mt-5">
+                    <div className={'row text-center pb-5'}>
+                        <p className={'h2'}>
+                            Log in
+                        </p>
+                    </div>
                     <form onSubmit={handleUserLoginRequest}>
                         <div className="mb-3">
                             <label className="form-label">Username</label>
@@ -67,11 +79,19 @@ export default function StudentLogin() {
                         <div className="d-flex gap-2">
                             <Button
                                 type={"submit"}
-                                className="btn btn-primary w-100 mt-4"
+                                className="btn btn-primary w-75 mt-4"
                                 disabled={loading}
                             >
                                 {loading ? "Logging in…" : "Login"}
                             </Button>
+                            <Link to={'/register'} className={'text-decoration-none text-light w-25'}>
+                                <Button
+                                    className="btn btn-secondary w-100 mt-4"
+                                    disabled={loading}
+                                >
+                                    Register
+                                </Button>
+                            </Link>
                         </div>
                     </form>
                 </div>

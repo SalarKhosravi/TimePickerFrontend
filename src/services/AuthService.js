@@ -1,4 +1,4 @@
-import { registerStudent } from "./studentService";
+import { registerUser } from "./userService.js";
 
 export function getUserInfo() {
     const storedFullName = localStorage.getItem('full_name');
@@ -14,14 +14,13 @@ export function getUserInfo() {
     return null;
 }
 
-export function isStudentLoggedIn() {
+export function isUserLoggedIn() {
     const user_token = localStorage.getItem('user_token');
     const full_name = localStorage.getItem('full_name');
     const phone_number = localStorage.getItem('phone_number');
 
     return !!(user_token && full_name && phone_number);
 }
-
 
 export function isAdminLoggedIn() {
     const user_token = localStorage.getItem('user_token');
@@ -35,7 +34,7 @@ export function isAdminLoggedIn() {
 }
 
 
-export function handleStudentLogout() {
+export function handleUserLogout() {
     localStorage.removeItem("user_token");
     localStorage.removeItem("full_name");
     localStorage.removeItem("phone_number");
@@ -62,13 +61,13 @@ export function handleUserLogin(data) {
 }
 
 
-export async function handleRegisterStudent(name) {
+export async function handleRegisterUser(name) {
     try {
-        const result = await registerStudent(name);
+        const result = await registerUser(name);
 
         if (result.data) {
-            localStorage.setItem('student_name', result.data.name);
-            localStorage.setItem('student_id', result.data.id);
+            localStorage.setItem('user_full_name', result.data.fuul_name);
+            localStorage.setItem('user_id', result.data.id);
 
             return { ok: true, data: result.data };
         } else {

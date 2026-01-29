@@ -4,14 +4,13 @@ import { Button, Table } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { TooltipInformation } from "@/components/partitions/TooltipInformation";
 import {
-  getUserInfo,
-  isAdminLoggedIn,
-  isStudentLoggedIn,
+    getUserInfo,
+    isAdminLoggedIn,
 } from "@/services/AuthService.js";
 import { toaste } from "@/components/partitions/ToastNotifications.jsx";
 import AlertModal from "@/components/partitions/AlertModal.jsx";
 import Sleep from "@/components/partitions/Sleep.js";
-
+import {isUserLoggedIn} from "@/services/AuthService.js";
 
 
 async function handleDeleteCourse(course_id) {
@@ -29,7 +28,7 @@ async function handleDeleteCourse(course_id) {
 
 
 export default function CourseCalendarView() {
-  const isUserLoggedIn = isStudentLoggedIn();
+  const isUserLogIn = isUserLoggedIn()
   const adminIsLogged = isAdminLoggedIn();
 
   const { id } = useParams();
@@ -124,7 +123,7 @@ export default function CourseCalendarView() {
     }
   }
 
-  async function handleRegisterStudentSlot(slotId, is_selected) {
+  async function handleRegisterUserSlot(slotId, is_selected) {
   const user_id = localStorage.getItem("user_id");
 
   let result = null;
@@ -262,7 +261,7 @@ export default function CourseCalendarView() {
                             </span>
                           )}
 
-                          {isUserLoggedIn && (
+                          {isUserLogIn && (
                             <span className="text-center d-flex flex-row justify-content-center align-items-center">
                               {slot.status ? (
                                 <Button
@@ -275,7 +274,7 @@ export default function CourseCalendarView() {
                                     }`}
                                   style={{ maxWidth: "100px" }}
                                   onClick={() =>
-                                    handleRegisterStudentSlot(
+                                    handleRegisterUserSlot(
                                       slot.id,
                                       is_selected(slot.user_picks),
                                       fetchCalendar

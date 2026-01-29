@@ -26,7 +26,7 @@ export default function Footbar() {
                                 <p className="py-1 small">Dashboard</p>
                             </div>
                         </Nav.Link>
-                        <Nav.Link as={Link} to="/admin/students" className="text-center pt-3">
+                        <Nav.Link as={Link} to="/admin/users" className="text-center pt-3">
                             <div>
                                 <i className="bi bi-people-fill h3"></i>
                                 <p className="py-1 small">Students</p>

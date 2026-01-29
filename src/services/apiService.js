@@ -1,5 +1,5 @@
 import axios from "axios";
-import {handleAdminLogout, handleStudentLogout} from "@/services/AuthService.js";
+import {handleAdminLogout, handleUserLogout} from "@/services/AuthService.js";
 import {toaste} from "@/components/partitions/ToastNotifications.jsx";
 import Sleep from "@/components/partitions/Sleep.js";
 
@@ -53,7 +53,7 @@ const apiService = async (method, path, data = null) => {
         let message = "An unknown error occurred";
 
         if(error?.response?.status === 404){
-            // handleStudentLogout()
+            // handleUserLogout()
             // handleAdminLogout()
 
             toaste.show("Failed!", 'You must log in', 2500, "danger");
