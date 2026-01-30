@@ -2,16 +2,13 @@ import { registerUser } from "./userService.js";
 
 export function getUserInfo() {
     const storedFullName = localStorage.getItem('full_name');
+    const storedPhone = localStorage.getItem('phone_number');
     const storedId = localStorage.getItem('user_id');
-
-    if (storedFullName && storedId) {
-        return {
-            id: storedId,
-            name: storedFullName,
-        }
+    return {
+        id: storedId,
+        phone_number: storedPhone,
+        full_name: storedFullName,
     }
-    console.error('cant found user info')
-    return null;
 }
 
 export function isUserLoggedIn() {
