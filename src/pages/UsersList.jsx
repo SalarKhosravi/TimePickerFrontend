@@ -31,27 +31,27 @@ export default function UsersList() {
                 <p className="p-0 m-0 h4">Users List</p>
             </div>
             <div className="row mx-auto">
-                    <div className="col-12 px-4" >
+                    <div className="col-12 px-0 px-md-2 px-lg-5" >
                         <Table responsive hover borderless variant="dark">
                             <thead>
                             <tr className={'border-bottom'}>
                                 <th>id</th>
                                 <th>Full Name</th>
-                                <th>Email</th>
+                                {/* <th>Email</th> */}
                                 <th>Phone</th>
                                 <th></th>
                             </tr>
                             </thead>
                             <tbody>
                                 {users && users.map((user) => (
-                                    <tr key={user?.id}>
-                                        <td>{user?.id}</td>
-                                        <td>{user?.full_name}</td>
-                                        <td>{user?.email}</td>
-                                        <td>{user?.phone_number}</td>
+                                    <tr key={user?.id} className=''>
+                                        <td >{user?.id}</td>
+                                        <td className='text-nowrap'>{user?.full_name}</td>
+                                        {/* <td>{user?.email}</td> */}
+                                        <td className='text-nowrap'>{user?.phone_number}</td>
                                         <td>
                                             <AlertModal
-                                                message={`${user?.name} will be deleted, fine ?`}
+                                                message={`${user?.full_name} will be deleted, fine ?`}
                                                 onConfirm={() => {
                                                     handleDeleteUser(user?.id, refetch)
                                                 }}
@@ -63,7 +63,7 @@ export default function UsersList() {
                                                 key={user?.id}
                                                 variant="danger"
                                                 size="sm"
-                                                className=""
+                                                className="float-end"
                                             >
                                                 <i className={'bi bi-trash'}></i>
                                             </Button>

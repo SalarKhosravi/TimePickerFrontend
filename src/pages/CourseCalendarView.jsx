@@ -1,17 +1,17 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import apiService from "@/services/apiService.js";
 import { Button, Table } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { TooltipInformation } from "@/components/partitions/TooltipInformation";
 import {
-    getUserInfo,
-    isAdminLoggedIn,
+  getUserInfo,
+  isAdminLoggedIn,
 } from "@/services/AuthService.js";
 import { toaste } from "@/components/partitions/ToastNotifications.jsx";
 import AlertModal from "@/components/partitions/AlertModal.jsx";
 import Sleep from "@/components/partitions/Sleep.js";
-import {isUserLoggedIn} from "@/services/AuthService.js";
-
+import { isUserLoggedIn } from "@/services/AuthService.js";
+import ImperativeAlertModal from '@/components/partitions/ImperativeAlertModal'
 
 async function handleDeleteCourse(course_id) {
   const result = await apiService("delete", `/courses/${course_id}/`);
@@ -28,6 +28,9 @@ async function handleDeleteCourse(course_id) {
 
 
 export default function CourseCalendarView() {
+  
+  
+
   const isUserLogIn = isUserLoggedIn()
   const adminIsLogged = isAdminLoggedIn();
 
@@ -51,8 +54,15 @@ export default function CourseCalendarView() {
     }
   }
 
+  function openActivateSlotModal(slot) {
+      registedUserModalRef.current.open({slot});
+  }
 
-  async function handleActivateSlot(slot_id, slot_status) {
+  async function handleActivateSlot(data) {
+    let slot_id = data.slot.id
+    let slot_status = data.slot.status
+
+
     let result = null;
     if (slot_status) {
       result = await apiService("post", `/slots/${slot_id}/deactivate/`);
@@ -88,6 +98,8 @@ export default function CourseCalendarView() {
     setLoading(false);
   }, [id]);
 
+  const registedUserModalRef = useRef(null);
+  
   useEffect(() => {
     fetchCalendar();
   }, [id, fetchCalendar]);
@@ -124,34 +136,42 @@ export default function CourseCalendarView() {
   }
 
   async function handleRegisterUserSlot(slotId, is_selected) {
-  const user_id = localStorage.getItem("user_id");
+    const user_id = localStorage.getItem("user_id");
 
-  let result = null;
-  if (!is_selected) {
-    result = await apiService("post", `/register-slot/select/`, {
-      calendar_slot: slotId,
-      user: user_id,
-    });
-  } else {
-    result = await apiService("post", `/register-slot/deselect/`, {
-      calendar_slot: slotId,
-      user: user_id,
-    });
+    let result = null;
+    if (!is_selected) {
+      result = await apiService("post", `/register-slot/select/`, {
+        calendar_slot: slotId,
+        user: user_id,
+      });
+    } else {
+      result = await apiService("post", `/register-slot/deselect/`, {
+        calendar_slot: slotId,
+        user: user_id,
+      });
+    }
+
+    setCourseCalendar(result.data.course)
+
+    if (result.data) {
+      toaste.show("Success", "Data saved successfully!", 2500, "success");
+    } else {
+      toaste.show("Failed!", result.message, 2500, "danger");
+    }
   }
 
-  setCourseCalendar(result.data.course)
-
-  if (result.data) {
-    toaste.show("Success", "Data saved successfully!", 2500, "success");
-  } else {
-    toaste.show("Failed!", result.message, 2500, "danger");
-  }
-
-
-}
 
   return (
     <div>
+
+      <ImperativeAlertModal
+        ref={registedUserModalRef}
+        onConfirm={(data) => {
+        handleActivateSlot(data);
+    }}
+
+      />
+
       <div
         className={
           "d-flex flex-row justify-content-between align-items-center mb-5"
@@ -198,124 +218,123 @@ export default function CourseCalendarView() {
             {days.map((day) => {
               return (
                 <tr key={day}>
-                    <td style={{ textTransform: "capitalize" }}>{day}</td>
-                    {times.map((time) => {
-                      const slot = calendarMap[day]?.[time];
-                      return (
-                        <td key={time}>
-                          {adminIsLogged && (
-                            <span
-                              className="text-center d-flex flex-row justify-content-center align-items-center"
-                              onClick={() =>
-                                handleActivateSlot(
-                                  slot.id,
-                                  slot.status,
-                                  fetchCalendar
-                                )
-                              }
-                            >
-                              {slot.status ? (
-                                <TooltipInformation
-                                  tooltipContent={
-                                    <div>
-                                      {slot?.user_picks.length > 0 ? (
-                                        slot?.user_picks.map((item) => (
-                                          <div key={item.user?.id}>
-                                            {item.user?.full_name}
-                                          </div>
-                                        ))
-                                      ) : (
-                                        <div>No Users</div>
-                                      )}
-                                    </div>
-                                  }
-                                >
-                                  <Button
-                                    disabled={!slot.status}
-                                    size="sm"
-                                    className={`w-100 ${setColor(
-                                      slot.status,
-                                      slot.count
-                                    )}`}
-                                    style={{
-                                      maxWidth: "100px",
-                                      backgroundColor: setOpacity(
-                                        slot.status,
-                                        slot.count
-                                      ),
-                                    }}
-                                  >
-                                    {slot.count}
-                                  </Button>
-                                </TooltipInformation>
-                              ) : (
+                  <td style={{ textTransform: "capitalize" }}>{day}</td>
+                  {times.map((time) => {
+                    const slot = calendarMap[day]?.[time];
+                    return (
+                      <td key={time}>
+                        {adminIsLogged && (
+                          <span
+                            className="text-center d-flex flex-row justify-content-center align-items-center"
+                            onClick={() =>
+                              openActivateSlotModal(
+                                slot,
+                                fetchCalendar
+                              )
+                            }
+                          >
+                            {slot.status ? (
+                              <TooltipInformation
+                                tooltipContent={
+                                  <div>
+                                    {slot?.user_picks.length > 0 ? (
+                                      slot?.user_picks.map((item) => (
+                                        <div key={item.user?.id}>
+                                          {item.user?.full_name}
+                                        </div>
+                                      ))
+                                    ) : (
+                                      <div>No Users</div>
+                                    )}
+                                  </div>
+                                }
+                              >
                                 <Button
-                                  className="w-100"
-                                  variant="secondary"
-                                  size="sm"
-                                  style={{ maxWidth: "100px", opacity: "0%" }}
-                                >
-                                  &nbsp;
-                                </Button>
-                              )}
-                            </span>
-                          )}
-
-                          {isUserLogIn && (
-                            <span className="text-center d-flex flex-row justify-content-center align-items-center">
-                              {slot.status ? (
-                                <Button
-                                  variant={slot.status ? "" : "secondary"}
                                   disabled={!slot.status}
                                   size="sm"
-                                  className={`w-100 ${is_selected(slot.user_picks)
-                                      ? "btn-primary"
-                                      : "btn-secondary"
-                                    }`}
-                                  style={{ maxWidth: "100px" }}
-                                  onClick={() =>
-                                    handleRegisterUserSlot(
-                                      slot.id,
-                                      is_selected(slot.user_picks),
-                                      fetchCalendar
-                                    )
-                                  }
+                                  className={`w-100 ${setColor(
+                                    slot.status,
+                                    slot.count
+                                  )}`}
+                                  style={{
+                                    maxWidth: "100px",
+                                    backgroundColor: setOpacity(
+                                      slot.status,
+                                      slot.count
+                                    ),
+                                  }}
                                 >
+                                  {slot.count}
+                                </Button>
+                              </TooltipInformation>
+                            ) : (
+                              <Button
+                                className="w-100"
+                                variant="secondary"
+                                size="sm"
+                                style={{ maxWidth: "100px", opacity: "0%" }}
+                              >
+                                &nbsp;
+                              </Button>
+                            )}
+                          </span>
+                        )}
 
-                                    {is_selected(slot.user_picks) &&
-                                        <div className={'d-flex flex-row justify-content-between align-items-center'}>
-                                            <span className={'ms-1'}>Ok</span>
-                                            <span className={'ms-1'}>
-                                                {slot.count}
-                                            </span>
-                                            <i className="bi bi-check-circle"></i>
-                                        </div>
-                                    }
-                                    {!is_selected(slot.user_picks) &&
-                                        <div className={'d-flex flex-row justify-content-between align-items-center'}>
-                                            <span className={'ms-1'}>Bussy</span>
-                                            <span className={'ms-1'}>{slot.count}</span>
-                                            <i className="bi bi-x-circle"></i>
-                                        </div>
-                                    }
-                                </Button>
-                              ) : (
-                                <Button
-                                  className="w-100"
-                                  variant="secondary"
-                                  disabled
-                                  size="sm"
-                                  style={{ maxWidth: "100px", opacity: "0%" }}
-                                >
-                                  &nbsp;
-                                </Button>
-                              )}
-                            </span>
-                          )}
-                        </td>
-                      );
-                    })}
-                  </tr>
+                        {isUserLogIn && (
+                          <span className="text-center d-flex flex-row justify-content-center align-items-center">
+                            {slot.status ? (
+                              <Button
+                                variant={slot.status ? "" : "secondary"}
+                                disabled={!slot.status}
+                                size="sm"
+                                className={`w-100 ${is_selected(slot.user_picks)
+                                  ? "btn-primary"
+                                  : "btn-secondary"
+                                  }`}
+                                style={{ maxWidth: "100px" }}
+                                onClick={() =>
+                                  handleRegisterUserSlot(
+                                    slot.id,
+                                    is_selected(slot.user_picks),
+                                    fetchCalendar
+                                  )
+                                }
+                              >
+
+                                {is_selected(slot.user_picks) &&
+                                  <div className={'d-flex flex-row justify-content-between align-items-center'}>
+                                    <span className={'ms-1'}>Ok</span>
+                                    <span className={'ms-1'}>
+                                      {slot.count}
+                                    </span>
+                                    <i className="bi bi-check-circle"></i>
+                                  </div>
+                                }
+                                {!is_selected(slot.user_picks) &&
+                                  <div className={'d-flex flex-row justify-content-between align-items-center'}>
+                                    <span className={'ms-1'}>Bussy</span>
+                                    <span className={'ms-1'}>{slot.count}</span>
+                                    <i className="bi bi-x-circle"></i>
+                                  </div>
+                                }
+                              </Button>
+                            ) : (
+                              <Button
+                                className="w-100"
+                                variant="secondary"
+                                disabled
+                                size="sm"
+                                style={{ maxWidth: "100px", opacity: "0%" }}
+                              >
+                                &nbsp;
+                              </Button>
+                            )}
+                          </span>
+                        )}
+                      </td>
+                    );
+                  })}
+                </tr>
               );
             })}
           </tbody>
