@@ -9,12 +9,27 @@ import Sleep from "@/components/partitions/Sleep.js";
 
 
 export default function UserRegister() {
-    const [username, setUsername] = useState();
-    const [password, setPassword] = useState();
-    const [full_name, setFullName] = useState();
+    const [username, setUsername] = useState("")
+    const [password, setPassword] = useState("")
+    const [full_name, setFullName] = useState("")
+    const [showPassword, setShowPassword] = useState(false)
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+
+
+
+    const checks = {
+        length: password?.length >= 8,
+        number: /\d/.test(password),
+        upper: /[A-Z]/.test(password),
+        symbol: /[^A-Za-z0-9]/.test(password),
+    }
+
+    const itemStyle = (ok) => ({
+        color: ok ? "#67a5ff" : "#fef0f2",
+        fontSize: "12px",
+    })
 
     const handleUserRegisterRequest = async (e) => {
         e.preventDefault();
@@ -60,7 +75,7 @@ export default function UserRegister() {
                     </div>
                     <form onSubmit={handleUserRegisterRequest}>
                         <div className="mb-3">
-                            <label className="form-label">Full Name</label>
+                            <label className="form-label">Full Name (English)</label>
                             <input
                                 type="text"
                                 className="form-control"
@@ -85,32 +100,58 @@ export default function UserRegister() {
 
                         <div className="mb-3">
                             <label className="form-label">Password</label>
-                            <input
-                                type="password"
-                                className="form-control"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                placeholder={'Password'}
-                                required
-                            />
+
+                            <div className="input-group">
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    className="form-control"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    placeholder="Password"
+                                    required
+                                />
+
+                                <span
+                                    className="input-group-text"
+                                    style={{ cursor: "pointer" }}
+                                    onClick={() => setShowPassword((prev) => !prev)}
+                                >
+                                    <i className={`bi ${showPassword ? "bi-eye-slash" : "bi-eye"}`} />
+                                </span>
+                            </div>
+
+                            <ul className="mt-2 ps-3">
+                                <li style={itemStyle(checks.length)}>
+                                    At least 8 characters
+                                </li>
+                                <li style={itemStyle(checks.number)}>
+                                    At least one number
+                                </li>
+                                <li style={itemStyle(checks.upper)}>
+                                    At least one uppercase letter
+                                </li>
+                                <li style={itemStyle(checks.symbol)}>
+                                    At least one symbol
+                                </li>
+                            </ul>
                         </div>
 
                         {error && <div className="alert alert-danger py-2">{error}</div>}
 
-                        <div className="d-flex gap-2">
+                        <div className="d-flex flex-column gap-2 mt-5">
                             <Button
                                 type={"submit"}
-                                className="btn btn-primary w-75 mt-4"
+                                className="btn btn-primary w-100"
                                 disabled={loading}
                             >
                                 {loading ? "Logging in…" : "Register"}
                             </Button>
-                            <Link to={'/login'} className={'text-decoration-none text-light w-25'}>
+                            <Link to={'/login'} className={'text-decoration-none text-light w-100'}>
                                 <Button
-                                    className="btn btn-secondary w-100 mt-4"
+                                    className="btn btn-secondary w-100"
                                     disabled={loading}
                                 >
-                                Login
+                                Go to Login
                                 </Button>
                             </Link>
                         </div>

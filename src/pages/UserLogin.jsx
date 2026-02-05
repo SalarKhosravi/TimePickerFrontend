@@ -8,6 +8,7 @@ import {Link, useNavigate} from "react-router-dom";
 export default function UserLogin() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false)
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
 
@@ -48,48 +49,61 @@ export default function UserLogin() {
                 <div className="col-12 col-md-6 col-xl-5 col-xxl-4 mt-5">
                     <div className={'row text-center pb-5'}>
                         <p className={'h2'}>
-                            Log in
+                            Sign in
                         </p>
                     </div>
                     <form onSubmit={handleUserLoginRequest}>
                         <div className="mb-3">
-                            <label className="form-label">Username</label>
+                            <label className="form-label">Phone Number</label>
                             <input
                                 type="text"
                                 className="form-control"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
+                                placeholder='0912'
                                 required
                             />
                         </div>
 
                         <div className="mb-3">
                             <label className="form-label">Password</label>
-                            <input
-                                type="password"
-                                className="form-control"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                            />
+                            <div className="input-group">
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    className="form-control"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    placeholder="password"
+                                    required
+                                />
+
+                                <span
+                                    className="input-group-text"
+                                    style={{ cursor: "pointer" }}
+                                    onClick={() => setShowPassword((prev) => !prev)}
+                                >
+                                    <i className={`bi ${showPassword ? "bi-eye-slash" : "bi-eye"}`} />
+                                </span>
+                            </div>
                         </div>
+
 
                         {error && <div className="alert alert-danger py-2">{error}</div>}
 
-                        <div className="d-flex gap-2">
+                        <div className="d-flex flex-column gap-2 mt-5">
                             <Button
                                 type={"submit"}
-                                className="btn btn-primary w-75 mt-4"
+                                className="btn btn-primary w-100"
                                 disabled={loading}
                             >
                                 {loading ? "Logging in…" : "Login"}
                             </Button>
-                            <Link to={'/register'} className={'text-decoration-none text-light w-25'}>
+                            <Link to={'/register'} className={'text-decoration-none text-light w-100'}>
                                 <Button
-                                    className="btn btn-secondary w-100 mt-4"
+                                    className="btn btn-secondary w-100"
                                     disabled={loading}
                                 >
-                                    Register
+                                    Let's Register
                                 </Button>
                             </Link>
                         </div>
